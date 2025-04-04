@@ -6,16 +6,35 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 
 // Initialize Supabase client
 let supabase;
-if (typeof window.supabaseClient !== 'undefined') {
-    supabase = window.supabaseClient;
-} else if (typeof window.supabase !== 'undefined') {
-    supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-    window.supabaseClient = supabase;
+
+// Function to initialize Supabase client
+function initSupabase() {
+    if (typeof window.supabaseClient !== 'undefined') {
+        supabase = window.supabaseClient;
+        return true;
+    } else if (typeof window.supabase !== 'undefined') {
+        try {
+            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+            window.supabaseClient = supabase;
+            return true;
+        } catch (error) {
+            console.error('Error initializing Supabase client:', error);
+            return false;
+        }
+    }
+    return false;
 }
 
-// Check if Supabase is configured
+// Try to initialize immediately
+initSupabase();
+
+// Check if Supabase is configured and initialized
 function usingSupabase() {
-    return supabaseUrl && supabaseKey && supabaseUrl.includes('supabase.co');
+    // Try to initialize if not already done
+    if (!supabase) {
+        initSupabase();
+    }
+    return supabase && supabaseUrl && supabaseKey && supabaseUrl.includes('supabase.co');
 }
 
 // User Authentication
