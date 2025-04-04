@@ -486,23 +486,31 @@
 
     <!-- Scripts -->
     <script src="frontend/src/js/utils.js"></script>
-    <script src="frontend/src/js/supabase-api.js"></script>
-    <script src="frontend/src/js/mock-api.js"></script>
-    <script src="frontend/src/js/api-manager.js"></script>
     <script src="frontend/src/js/ui.js"></script>
-    <script src="frontend/src/js/app.js"></script>
+    <script type="module" src="frontend/src/js/supabase-api.js"></script>
+    <script type="module" src="frontend/src/js/mock-api.js"></script>
+    <script type="module" src="frontend/src/js/api-manager.js"></script>
+    <script type="module" src="frontend/src/js/app.js"></script>
     
-    <script>
+    <script type="module">
+        // Import necessary modules
+        import * as apiManager from './frontend/src/js/api-manager.js';
+        import * as app from './frontend/src/js/app.js';
+        
+        // Make them available globally
+        window.apiManager = apiManager;
+        window.app = app;
+        
         // Initialize with Supabase backend
         document.addEventListener('DOMContentLoaded', function() {
             // Force Supabase mode
-            window.apiManager.setBackend('supabase');
+            apiManager.setBackend('supabase');
             
             // Update the backend badge
             document.getElementById('backend-badge').textContent = 'Supabase Mode';
             
             // Initialize the app
-            window.app.init();
+            app.init();
         });
     </script>
 </body>
