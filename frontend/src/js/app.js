@@ -801,5 +801,78 @@ function exportAsJSON() {
     }, 0);
 }
 
-// Initialize app when DOM is loaded
-document.addEventListener('DOMContentLoaded', initApp);
+// Initialize app function
+function initApp() {
+    // Set up event listeners and initialize UI
+    loadUserTrips();
+    
+    // Set up event listeners for navigation
+    if (elements.newTripBtn) {
+        elements.newTripBtn.addEventListener('click', showTripCreation);
+    }
+    
+    if (elements.backToTripsBtn) {
+        elements.backToTripsBtn.addEventListener('click', showTripList);
+    }
+    
+    if (elements.backToTripsFromDetailsBtn) {
+        elements.backToTripsFromDetailsBtn.addEventListener('click', showTripList);
+    }
+    
+    // Set up tab buttons
+    elements.tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const tabName = button.getAttribute('data-tab');
+            switchTab(tabName);
+        });
+    });
+    
+    // Set up form submissions
+    if (elements.tripForm) {
+        elements.tripForm.addEventListener('submit', handleTripFormSubmit);
+    }
+    
+    if (elements.activityForm) {
+        elements.activityForm.addEventListener('submit', handleActivityFormSubmit);
+    }
+    
+    if (elements.expenseForm) {
+        elements.expenseForm.addEventListener('submit', handleExpenseFormSubmit);
+    }
+    
+    if (elements.photoForm) {
+        elements.photoForm.addEventListener('submit', e => e.preventDefault());
+    }
+    
+    if (elements.photoUpload) {
+        elements.photoUpload.addEventListener('change', handlePhotoUpload);
+    }
+    
+    // Set up export buttons
+    if (elements.exportPdf) {
+        elements.exportPdf.addEventListener('click', exportAsPDF);
+    }
+    
+    if (elements.exportHtml) {
+        elements.exportHtml.addEventListener('click', exportAsHTML);
+    }
+    
+    if (elements.exportJson) {
+        elements.exportJson.addEventListener('click', exportAsJSON);
+    }
+    
+    // Set up add destination button
+    if (elements.addDestinationBtn) {
+        elements.addDestinationBtn.addEventListener('click', addDestinationField);
+    }
+    
+    // Set up cancel activity button
+    if (elements.cancelActivityBtn) {
+        elements.cancelActivityBtn.addEventListener('click', closeActivityModal);
+    }
+}
+
+// Export app for global access
+window.app = {
+    init: initApp
+};

@@ -31,6 +31,15 @@ export function setBackend(backendType) {
     return false;
 }
 
+// Get the current backend type
+export function getBackendType() {
+    if (api === supabaseApi) {
+        return 'Supabase Mode';
+    } else {
+        return 'localStorage Mode';
+    }
+}
+
 // Export all API functions, delegating to the appropriate implementation
 export async function registerUser(username, email, password) {
     return api.registerUser(username, email, password);
