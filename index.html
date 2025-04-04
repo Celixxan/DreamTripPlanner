@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Trip Planner</title>
+    <meta http-equiv="refresh" content="0; url=frontend/no-backend.html">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="frontend/src/css/photobook-styles.css">
+</head>
+<body class="bg-gray-100 min-h-screen text-center p-8">
+    <!-- Decorative Elements -->
+    <div class="decorative-corner top-left"></div>
+    <div class="decorative-corner top-right"></div>
+    <div class="decorative-corner bottom-left"></div>
+    <div class="decorative-corner bottom-right"></div>
+    <!-- Navigation -->
+    <nav id="main-nav" class="text-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <i class="fas fa-plane-departure text-2xl mr-2"></i>
+                <h1 class="text-xl font-bold">Dream Trip Planner</h1>
+            </div>
+            <div id="nav-links">
+                <!-- These links will be shown/hidden based on auth status -->
+                <div id="auth-links" class="hidden">
+                    <button id="login-nav-btn" class="px-4 py-2 text-white hover:bg-blue-700 rounded">Login</button>
+                    <button id="register-nav-btn" class="px-4 py-2 bg-white text-blue-600 hover:bg-gray-100 rounded">Register</button>
+                </div>
+                <div id="user-links" class="hidden">
+                    <span id="username-display" class="mr-4"></span>
+                    <button id="logout-btn" class="px-4 py-2 bg-white text-blue-600 hover:bg-gray-100 rounded">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Auth Section -->
+        <section id="auth-section" class="hidden">
+            <div class="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="px-6 py-8">
+                    <!-- Auth Tabs -->
+                    <div class="flex border-b mb-6">
+                        <button id="login-tab" class="flex-1 py-2 font-medium text-center border-b-2 border-blue-500">Login</button>
+                        <button id="register-tab" class="flex-1 py-2 font-medium text-center text-gray-500">Register</button>
+                    </div>
+
+                    <!-- Login Form -->
+                    <form id="login-form" class="space-y-4">
+                        <div>
+                            <label for="login-email" class="block text-gray-700 mb-1">Email</label>
+                            <input type="email" id="login-email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <div>
+                            <label for="login-password" class="block text-gray-700 mb-1">Password</label>
+                            <input type="password" id="login-password" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <div id="login-error" class="text-red-500 text-sm hidden"></div>
+                        <button type="submit" class="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                            <span id="login-btn-text">Login</span>
+                            <span id="login-btn-loading" class="hidden">
+                                <i class="fas fa-spinner fa-spin"></i> Logging in...
+                            </span>
+                        </button>
+                    </form>
+
+                    <!-- Register Form -->
+                    <form id="register-form" class="space-y-4 hidden">
+                        <div>
+                            <label for="register-username" class="block text-gray-700 mb-1">Username</label>
+                            <input type="text" id="register-username" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <div>
+                            <label for="register-email" class="block text-gray-700 mb-1">Email</label>
+                            <input type="email" id="register-email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <div>
+                            <label for="register-password" class="block text-gray-700 mb-1">Password</label>
+                            <input type="password" id="register-password" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <div>
+                            <label for="register-confirm-password" class="block text-gray-700 mb-1">Confirm Password</label>
+                            <input type="password" id="register-confirm-password" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <div id="register-error" class="text-red-500 text-sm hidden"></div>
+                        <button type="submit" class="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                            <span id="register-btn-text">Register</span>
+                            <span id="register-btn-loading" class="hidden">
+                                <i class="fas fa-spinner fa-spin"></i> Registering...
+                            </span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trip List Section -->
+        <section id="trip-list-section" class="hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">My Trips</h2>
+                <button id="new-trip-btn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    <i class="fas fa-plus mr-2"></i>New Trip
+                </button>
+            </div>
+            
+            <div id="trips-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Trip cards will be dynamically inserted here -->
+                <div id="no-trips-message" class="col-span-full text-center py-8 text-gray-500">
+                    <i class="fas fa-suitcase-rolling text-4xl mb-4"></i>
+                    <p>You don't have any trips yet. Click "New Trip" to get started!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trip Creation Section -->
+        <section id="trip-creation-section" class="hidden">
+            <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="px-6 py-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800">Create New Trip</h2>
+                        <button id="back-to-trips" class="text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-arrow-left mr-1"></i>Back to Trips
+                        </button>
+                    </div>
+                    
+                    <form id="trip-form" class="space-y-6">
+                        <div>
+                            <label for="trip-name" class="block text-gray-700 mb-1">Trip Name</label>
+                            <input type="text" id="trip-name" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="start-date" class="block text-gray-700 mb-1">Start Date</label>
+                                <input type="date" id="start-date" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                            <div>
+                                <label for="end-date" class="block text-gray-700 mb-1">End Date</label>
+                                <input type="date" id="end-date" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="trip-type" class="block text-gray-700 mb-1">Trip Type</label>
+                            <select id="trip-type" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                <option value="">Select a trip type</option>
+                                <option value="city-break">City Break</option>
+                                <option value="beach">Beach Vacation</option>
+                                <option value="adventure">Adventure</option>
+                                <option value="cultural">Cultural</option>
+                                <option value="relaxation">Relaxation</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-1">Destinations</label>
+                            <div id="destinations-container">
+                                <div class="flex items-center mb-2">
+                                    <input type="text" class="destination w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter a destination" required>
+                                </div>
+                            </div>
+                            <button type="button" class="add-destination mt-2 text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-plus mr-1"></i>Add Another Destination
+                            </button>
+                        </div>
+                        
+                        <button type="submit" class="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                            <span id="create-trip-btn-text">Create Trip</span>
+                            <span id="create-trip-btn-loading" class="hidden">
+                                <i class="fas fa-spinner fa-spin"></i> Creating...
+                            </span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trip Details Section -->
+        <section id="trip-details-section" class="hidden">
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="px-6 py-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 id="trip-detail-name" class="text-2xl font-bold text-gray-800">Trip Name</h2>
+                        <button id="back-to-trips-from-details" class="text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-arrow-left mr-1"></i>Back to Trips
+                        </button>
+                    </div>
+                    
+                    <div class="flex flex-wrap mb-6">
+                        <div class="w-full md:w-1/2 lg:w-1/3 mb-4">
+                            <p class="text-gray-600">
+                                <i class="fas fa-calendar-alt mr-2"></i>
+                                <span id="trip-detail-dates">May 1, 2023 - May 10, 2023</span>
+                            </p>
+                        </div>
+                        <div class="w-full md:w-1/2 lg:w-1/3 mb-4">
+                            <p class="text-gray-600">
+                                <i class="fas fa-map-marker-alt mr-2"></i>
+                                <span id="trip-detail-destinations">Paris, Rome</span>
+                            </p>
+                        </div>
+                        <div class="w-full md:w-1/2 lg:w-1/3 mb-4">
+                            <p class="text-gray-600">
+                                <i class="fas fa-tag mr-2"></i>
+                                <span id="trip-detail-type">City Break</span>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Trip Detail Tabs -->
+                    <div class="border-b mb-6">
+                        <div class="flex">
+                            <button class="tab-btn px-4 py-2 font-medium text-center border-b-2 border-blue-500" data-tab="itinerary">Itinerary</button>
+                            <button class="tab-btn px-4 py-2 font-medium text-center text-gray-500" data-tab="budget">Budget</button>
+                            <button class="tab-btn px-4 py-2 font-medium text-center text-gray-500" data-tab="photos">Photos</button>
+                            <button class="tab-btn px-4 py-2 font-medium text-center text-gray-500" data-tab="export">Export</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Itinerary Tab -->
+                    <div id="itinerary-tab" class="tab-content">
+                        <div id="itinerary-container">
+                            <!-- Days will be dynamically inserted here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Budget Tab -->
+                    <div id="budget-tab" class="tab-content hidden">
+                        <div class="mb-6">
+                            <h3 class="text-xl font-semibold mb-4">Total Budget</h3>
+                            <div class="bg-gray-200 rounded-full h-4 mb-2">
+                                <div id="budget-progress" class="bg-blue-600 h-4 rounded-full" style="width: 0%"></div>
+                            </div>
+                            <p class="text-right font-bold" id="total-budget">$0.00</p>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h3 class="text-xl font-semibold mb-4">Add Expense</h3>
+                            <form id="expense-form" class="space-y-4">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label for="expense-category" class="block text-gray-700 mb-1">Category</label>
+                                        <select id="expense-category" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                            <option value="transport">Transport</option>
+                                            <option value="accommodation">Accommodation</option>
+                                            <option value="food">Food & Drinks</option>
+                                            <option value="activities">Activities</option>
+                                            <option value="shopping">Shopping</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="expense-amount" class="block text-gray-700 mb-1">Amount</label>
+                                        <input type="number" id="expense-amount" min="0" step="0.01" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                    </div>
+                                    <div>
+                                        <label for="expense-description" class="block text-gray-700 mb-1">Description</label>
+                                        <input type="text" id="expense-description" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                                    Add Expense
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-xl font-semibold mb-4">Expenses</h3>
+                            <div id="expenses-list" class="space-y-2">
+                                <!-- Expenses will be dynamically inserted here -->
+                                <p class="text-gray-500 text-center">No expenses added yet.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Photos Tab -->
+                    <div id="photos-tab" class="tab-content hidden">
+                        <div class="mb-6">
+                            <h3 class="text-xl font-semibold mb-4">Add Photos</h3>
+                            <form id="photo-form" class="space-y-4">
+                                <div>
+                                    <label for="photo-upload" class="block text-gray-700 mb-1">Upload Photo</label>
+                                    <input type="file" id="photo-upload" accept="image/*" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label for="photo-caption" class="block text-gray-700 mb-1">Caption (optional)</label>
+                                    <input type="text" id="photo-caption" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-xl font-semibold mb-4">Photos</h3>
+                            <div id="photos-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                <!-- Photos will be dynamically inserted here -->
+                                <p class="text-gray-500 text-center col-span-full">No photos added yet.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Export Tab -->
+                    <div id="export-tab" class="tab-content hidden">
+                        <div class="space-y-4">
+                            <h3 class="text-xl font-semibold mb-4">Export Trip Details</h3>
+                            <p class="text-gray-600 mb-4">Export your trip details in various formats:</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <button id="export-pdf" class="py-3 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
+                                    <i class="far fa-file-pdf mr-2"></i>Export as PDF
+                                </button>
+                                <button id="export-html" class="py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                                    <i class="far fa-file-code mr-2"></i>Export as HTML
+                                </button>
+                                <button id="export-json" class="py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
+                                    <i class="far fa-file-alt mr-2"></i>Export as JSON
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Activity Modal -->
+    <div id="activity-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-lg max-w-md w-full mx-4">
+            <div class="px-6 py-4 border-b">
+                <h3 class="text-lg font-semibold">Add/Edit Activity</h3>
+            </div>
+            <form id="activity-form" class="px-6 py-4 space-y-4">
+                <div>
+                    <label for="activity-text" class="block text-gray-700 mb-1">Activity</label>
+                    <input type="text" id="activity-text" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label for="activity-notes" class="block text-gray-700 mb-1">Notes (optional)</label>
+                    <textarea id="activity-notes" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" rows="3"></textarea>
+                </div>
+                <div>
+                    <label for="activity-link" class="block text-gray-700 mb-1">Link (optional)</label>
+                    <input type="url" id="activity-link" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="flex justify-end space-x-2">
+                    <button type="button" id="cancel-activity" class="px-4 py-2 border text-gray-700 rounded-lg hover:bg-gray-100">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Templates -->
+    <template id="trip-card-template">
+        <div class="trip-card bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+            <div class="h-40 bg-blue-100 flex items-center justify-center">
+                <i class="fas fa-suitcase text-6xl text-blue-300"></i>
+            </div>
+            <div class="p-4">
+                <h3 class="text-xl font-bold mb-2 trip-name">Trip Name</h3>
+                <p class="text-gray-600 mb-2">
+                    <i class="fas fa-calendar-alt mr-2"></i>
+                    <span class="trip-dates">May 1, 2023 - May 10, 2023</span>
+                </p>
+                <p class="text-gray-600 mb-4">
+                    <i class="fas fa-map-marker-alt mr-2"></i>
+                    <span class="trip-destinations">Paris, Rome</span>
+                </p>
+                <button class="view-trip w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                    View Details
+                </button>
+            </div>
+        </div>
+    </template>
+
+    <template id="day-template">
+        <div class="day-card bg-white rounded-lg shadow-md overflow-hidden mb-6">
+            <div class="bg-blue-600 text-white px-4 py-2">
+                <h3 class="text-lg font-semibold day-title">Day 1 - Monday, May 1</h3>
+            </div>
+            <div class="p-4">
+                <div class="mb-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="font-medium text-gray-800">
+                            <i class="fas fa-sun text-yellow-500 mr-2"></i>Morning
+                        </h4>
+                        <button class="add-activity-btn px-2 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded" data-time="morning">
+                            <i class="fas fa-plus mr-1"></i>Add
+                        </button>
+                    </div>
+                    <div class="morning-activities activities-container">
+                        <!-- Morning activities will be inserted here -->
+                        <p class="text-gray-500 text-center py-2 no-activities">No activities planned for morning.</p>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="font-medium text-gray-800">
+                            <i class="fas fa-cloud-sun text-orange-500 mr-2"></i>Afternoon
+                        </h4>
+                        <button class="add-activity-btn px-2 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded" data-time="afternoon">
+                            <i class="fas fa-plus mr-1"></i>Add
+                        </button>
+                    </div>
+                    <div class="afternoon-activities activities-container">
+                        <!-- Afternoon activities will be inserted here -->
+                        <p class="text-gray-500 text-center py-2 no-activities">No activities planned for afternoon.</p>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="font-medium text-gray-800">
+                            <i class="fas fa-moon text-indigo-500 mr-2"></i>Evening
+                        </h4>
+                        <button class="add-activity-btn px-2 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded" data-time="evening">
+                            <i class="fas fa-plus mr-1"></i>Add
+                        </button>
+                    </div>
+                    <div class="evening-activities activities-container">
+                        <!-- Evening activities will be inserted here -->
+                        <p class="text-gray-500 text-center py-2 no-activities">No activities planned for evening.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="activity-template">
+        <div class="activity-item bg-gray-50 rounded p-3 mb-2">
+            <div class="flex justify-between">
+                <p class="activity-text font-medium"></p>
+                <div class="flex space-x-2">
+                    <button class="edit-activity text-blue-600 hover:text-blue-800">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="delete-activity text-red-600 hover:text-red-800">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="activity-notes text-gray-600 text-sm mt-1 hidden"></div>
+            <a href="#" class="activity-link text-blue-600 text-sm mt-1 hidden" target="_blank">
+                <i class="fas fa-link mr-1"></i>View Link
+            </a>
+        </div>
+    </template>
+
+    <template id="expense-template">
+        <div class="expense-item bg-gray-50 rounded p-3 mb-2">
+            <div class="flex justify-between">
+                <div>
+                    <span class="expense-category inline-block px-2 py-1 text-xs rounded text-white mb-1" data-category="transport"></span>
+                    <p class="expense-description font-medium"></p>
+                </div>
+                <div class="flex items-start">
+                    <p class="expense-amount font-bold mr-3"></p>
+                    <button class="delete-expense text-red-600 hover:text-red-800">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="photo-template">
+        <div class="photo-item bg-white rounded-lg shadow overflow-hidden">
+            <img src="" alt="Trip photo" class="w-full h-48 object-cover">
+            <div class="p-3">
+                <p class="photo-caption text-gray-700 text-sm"></p>
+                <button class="delete-photo text-red-600 hover:text-red-800 text-sm mt-2">
+                    <i class="fas fa-trash-alt mr-1"></i>Delete
+                </button>
+            </div>
+        </div>
+    </template>
+
+    <!-- Scripts -->
+    <script src="src/js/api.js"></script>
+    <script src="src/js/auth.js"></script>
+    <script src="src/js/trips.js"></script>
+    <script src="src/js/app.js"></script>
+</body>
+</html>

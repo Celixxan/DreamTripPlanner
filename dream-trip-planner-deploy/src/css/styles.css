@@ -1,0 +1,209 @@
+/* Dream Trip Planner - Main Styles */
+
+/* Custom Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* General Styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1200px;
+}
+
+/* Animation Classes */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.animate-slide-up {
+  animation: slideInUp 0.5s ease-in-out;
+}
+
+/* Navigation */
+#main-nav {
+  background: linear-gradient(to right, #4a6cf7, #2541b2);
+}
+
+/* Auth Forms */
+#auth-section form {
+  transition: all 0.3s ease;
+}
+
+/* Trip Cards */
+.trip-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.trip-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Expense Categories */
+.expense-category[data-category="transport"] {
+  background-color: #4a6cf7;
+}
+
+.expense-category[data-category="accommodation"] {
+  background-color: #f59e0b;
+}
+
+.expense-category[data-category="food"] {
+  background-color: #10b981;
+}
+
+.expense-category[data-category="activities"] {
+  background-color: #8b5cf6;
+}
+
+.expense-category[data-category="shopping"] {
+  background-color: #ec4899;
+}
+
+.expense-category[data-category="other"] {
+  background-color: #6b7280;
+}
+
+/* Activity Items */
+.activity-item {
+  transition: background-color 0.2s ease;
+}
+
+.activity-item:hover {
+  background-color: #f3f4f6;
+}
+
+/* Button Effects */
+button {
+  transition: all 0.2s ease;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* Day Cards */
+.day-card {
+  border-left: 4px solid #4a6cf7;
+}
+
+/* Photo Grid */
+#photos-grid img {
+  transition: transform 0.3s ease;
+}
+
+#photos-grid img:hover {
+  transform: scale(1.05);
+}
+
+/* Loading Spinner */
+.fa-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Tab Navigation */
+.tab-btn {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.tab-btn:not(.border-blue-500)::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: #4a6cf7;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.tab-btn:not(.border-blue-500):hover::after {
+  width: 50%;
+}
+
+/* Modal Animation */
+#activity-modal {
+  transition: opacity 0.3s ease;
+}
+
+#activity-modal.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#activity-modal:not(.hidden) {
+  opacity: 1;
+}
+
+#activity-modal > div {
+  transition: transform 0.3s ease;
+  transform: scale(0.95);
+}
+
+#activity-modal:not(.hidden) > div {
+  transform: scale(1);
+}
+
+/* Form Focus Effects */
+input:focus, select:focus, textarea:focus {
+  box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.2);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c5c5c5;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  
+  #trip-detail-name {
+    font-size: 1.5rem;
+  }
+  
+  .tab-btn {
+    padding-left: 12px;
+    padding-right: 12px;
+    font-size: 14px;
+  }
+}
