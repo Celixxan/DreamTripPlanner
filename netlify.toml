@@ -1,0 +1,7 @@
+[build]
+  publish = "frontend"
+  
+[[redirects]]
+  from = "/*"
+  to = "/no-backend.html"
+  status = 200
