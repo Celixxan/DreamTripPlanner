@@ -17,20 +17,6 @@ export async function initializeApi() {
     }
 }
 
-// Explicitly set which backend to use
-export function setBackend(backendType) {
-    if (backendType === 'supabase') {
-        console.log('Explicitly setting backend to Supabase');
-        api = supabaseApi;
-        return true;
-    } else if (backendType === 'localStorage') {
-        console.log('Explicitly setting backend to localStorage');
-        api = mockApi;
-        return true;
-    }
-    return false;
-}
-
 // Export all API functions, delegating to the appropriate implementation
 export async function registerUser(username, email, password) {
     return api.registerUser(username, email, password);

@@ -6,11 +6,6 @@ const supabaseUrl = 'https://gzpkmribdfnsrbdmoxxr.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6cGttcmliZGZuc3JiZG1veHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3NjE2NTYsImV4cCI6MjA1OTMzNzY1Nn0.Pvfwv7b1B8rdN4uRUwT-QJPf2U6NugVr6gwYnDLmbG4'
 const supabase = createClient(supabaseUrl, supabaseKey)
 
-// Check if Supabase is configured
-export function usingSupabase() {
-    return supabaseUrl && supabaseKey && supabaseUrl.includes('supabase.co');
-}
-
 // User Authentication
 export async function registerUser(username, email, password) {
     try {
