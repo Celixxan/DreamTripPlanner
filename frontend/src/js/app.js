@@ -872,7 +872,5 @@ function initApp() {
     }
 }
 
-// Export init function for ES modules
-export function init() {
-    initApp();
-}
+// Make initApp globally accessible
+window.initApp = initApp;

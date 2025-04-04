@@ -1,18 +1,25 @@
 // Supabase API Integration for Dream Trip Planner
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.4/+esm'
 
 // Initialize Supabase client with your Supabase URL and anon key
-const supabaseUrl = 'https://gzpkmribdfnsrbdmoxxr.supabase.co'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6cGttcmliZGZuc3JiZG1veHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3NjE2NTYsImV4cCI6MjA1OTMzNzY1Nn0.Pvfwv7b1B8rdN4uRUwT-QJPf2U6NugVr6gwYnDLmbG4'
-const supabase = createClient(supabaseUrl, supabaseKey)
+const supabaseUrl = 'https://gzpkmribdfnsrbdmoxxr.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6cGttcmliZGZuc3JiZG1veHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3NjE2NTYsImV4cCI6MjA1OTMzNzY1Nn0.Pvfwv7b1B8rdN4uRUwT-QJPf2U6NugVr6gwYnDLmbG4';
+
+// Initialize Supabase client
+let supabase;
+if (typeof window.supabaseClient !== 'undefined') {
+    supabase = window.supabaseClient;
+} else if (typeof window.supabase !== 'undefined') {
+    supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    window.supabaseClient = supabase;
+}
 
 // Check if Supabase is configured
-export function usingSupabase() {
+function usingSupabase() {
     return supabaseUrl && supabaseKey && supabaseUrl.includes('supabase.co');
 }
 
 // User Authentication
-export async function registerUser(username, email, password) {
+async function registerUser(username, email, password) {
     try {
         const { data, error } = await supabase.auth.signUp({
             email,
@@ -32,7 +39,7 @@ export async function registerUser(username, email, password) {
     }
 }
 
-export async function loginUser(email, password) {
+async function loginUser(email, password) {
     try {
         const { data, error } = await supabase.auth.signInWithPassword({
             email,
@@ -47,7 +54,7 @@ export async function loginUser(email, password) {
     }
 }
 
-export async function logoutUser() {
+async function logoutUser() {
     try {
         const { error } = await supabase.auth.signOut()
         if (error) throw error
@@ -58,7 +65,24 @@ export async function logoutUser() {
     }
 }
 
-export async function getCurrentUser() {
+// Expose all API functions globally
+window.api = {
+    usingSupabase,
+    registerUser,
+    loginUser,
+    logoutUser,
+    getCurrentUser,
+    createTrip,
+    getUserTrips,
+    getTripById,
+    updateTrip,
+    deleteTrip,
+    addDestination,
+    updateDestination,
+    deleteDestination
+};
+
+async function getCurrentUser() {
     try {
         const { data: { user } } = await supabase.auth.getUser()
         return user
@@ -69,7 +93,7 @@ export async function getCurrentUser() {
 }
 
 // Trip Management
-export async function createTrip(tripData) {
+async function createTrip(tripData) {
     try {
         const user = await getCurrentUser()
         if (!user) throw new Error('User not authenticated')
@@ -90,7 +114,7 @@ export async function createTrip(tripData) {
     }
 }
 
-export async function getUserTrips() {
+async function getUserTrips() {
     try {
         const user = await getCurrentUser()
         if (!user) throw new Error('User not authenticated')
@@ -109,7 +133,7 @@ export async function getUserTrips() {
     }
 }
 
-export async function getTripById(tripId) {
+async function getTripById(tripId) {
     try {
         const { data, error } = await supabase
             .from('trips')
@@ -125,7 +149,7 @@ export async function getTripById(tripId) {
     }
 }
 
-export async function updateTrip(tripId, tripData) {
+async function updateTrip(tripId, tripData) {
     try {
         const { data, error } = await supabase
             .from('trips')
@@ -141,7 +165,7 @@ export async function updateTrip(tripId, tripData) {
     }
 }
 
-export async function deleteTrip(tripId) {
+async function deleteTrip(tripId) {
     try {
         const { error } = await supabase
             .from('trips')
@@ -157,7 +181,7 @@ export async function deleteTrip(tripId) {
 }
 
 // Itinerary Management
-export async function addActivity(tripId, dayIndex, timeOfDay, activity) {
+async function addActivity(tripId, dayIndex, timeOfDay, activity) {
     try {
         // First get the trip to access its itinerary
         const { success, trip } = await getTripById(tripId)
@@ -187,7 +211,7 @@ export async function addActivity(tripId, dayIndex, timeOfDay, activity) {
     }
 }
 
-export async function removeActivity(tripId, dayIndex, timeOfDay, activityIndex) {
+async function removeActivity(tripId, dayIndex, timeOfDay, activityIndex) {
     try {
         // First get the trip to access its itinerary
         const { success, trip } = await getTripById(tripId)

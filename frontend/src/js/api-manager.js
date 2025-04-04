@@ -1,6 +1,5 @@
 // API Manager - Handles switching between Supabase and localStorage
-import * as mockApi from './mock-api.js';
-import * as supabaseApi from './supabase-api.js';
+// Access the global mockApi and supabaseApi objects
 
 // Determine which API to use
 let api = mockApi;
